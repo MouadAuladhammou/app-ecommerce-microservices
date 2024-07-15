@@ -1,0 +1,12 @@
+spring:
+  profiles:
+    active: native # Le profil "native" indique que le serveur de configuration doit utiliser le système de fichiers local pour lire les configurations afin de fournir ces configurations aux microservices lors de leur démarrage. Les fichiers de configuration doivent être placés dans le répertoire src/main/resources/configurations, comme spécifié par l'attribut "search-locations"
+  application:
+    name: config-server # Le nom de l'application de Spring Cloud Config Server est config-server
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:/configurations # spécifie l'emplacement où le serveur de configuration doit rechercher les fichiers de configuration pour fournir la configuration au microservice concerné lors de son demarage.
+server:
+  port: 8888 # Le serveur de configuration sera accessible sur le port 8888.

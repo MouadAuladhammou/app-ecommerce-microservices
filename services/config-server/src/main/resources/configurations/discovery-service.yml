@@ -1,0 +1,18 @@
+# Cette configuration est destinée à configurer un service Eureka (discovery), qui est un service de découverte utilisé pour la gestion des microservices dans une architecture de microservices
+#   ce fichier est stocké dans le répertoire surveillé par le Config-Server (Spring Cloud Config Server) et est utilisé pour fournir la configuration à ce microservice "discovery" lorsque celui-ci démarre.
+#   alors le fichier "src/main/resources/application.yml" de projet "discovery" contient des directives pour que le service "discovery" se connecte au Config-Server afin de récupérer sa configuration.
+#   Puisque nous avons défini que le dossier "configurations" celui qui contient les configurations des autres microservices en utilisant l'attribut "search-locations"
+#   alors chaque demande de configuration effectuée par un microservice sera prise en charge par le Config-Server pour le fournir au démarrage
+#   Note: le nom du fichier de configuration d'un microservice placé dans config-server\src\main\resources\configurations doit toujours être identique à celui renseigné dans le fichier src/main/resources/application.yml du projet de microservice, dans l'attribut : spring.application.name
+
+eureka:
+  instance:
+    hostname: localhost # Définit le nom d'hôte de l'instance Eureka. Dans ce cas, il est défini sur localhost, ce qui signifie que l'instance de Eureka s'exécutera sur l'hôte local.
+  client:
+    registerWithEureka: false # Défini sur false, cela signifie que ce service Eureka ne s'inscrira pas lui-même en tant que client auprès d'une autre instance Eureka, cependant, les autres microservices doivent s'inscrire auprès de ce service Eureka en tant que clients.
+    fetchRegistry: false # Défini sur false, cela signifie que ce service Eureka ne récupérera pas le registre des services d'autres instances Eureka. (car on a un seul instance de service Eureka utilisé ici)
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/ # Définit l'URL par défaut pour le service Eureka. Cela indique où les autres services peuvent se connecter pour s'inscrire auprès de cette instance Eureka.
+
+server:
+  port: 8761
