@@ -1,0 +1,36 @@
+# Cette configuration est destinée à configurer un service "customer", qui est un microservice dans une architecture de microservices
+#   ce fichier est stocké dans le répertoire surveillé par le Config-Server (Spring Cloud Config Server) et est utilisé pour fournir la configuration à ce microservice "customer" lorsque celui-ci démarre.
+#   alors le fichier "src/main/resources/application.yml" de projet "customer" contient des directives pour que le service "customer" se connecte au Config-Server afin de récupérer sa configuration.
+#   Puisque nous avons défini que le dossier "configurations" (config-server\src\main\resources\configurations) celui qui contient les configurations des autres microservices en utilisant l'attribut "search-locations"
+#   alors chaque demande de configuration effectuée par un microservice sera prise en charge par le Config-Server pour le fournir au démarrage
+#   Note: le nom du fichier de configuration d'un microservice placé dans config-server\src\main\resources\configurations doit toujours être identique à celui renseigné dans le fichier src/main/resources/application.yml du projet de microservice, dans l'attribut : spring.application.name
+
+spring:
+
+  # NB: Pour que Spring Boot prenne en compte les propriétés de configuration de MongoDB, la dépendance "Spring Data MongoDB" appropriée doit être ajoutée au projet de microservice "customer". (pom.xml: <artifactId>spring-boot-starter-data-mongodb</artifactId>)
+  # Cela permet la connexion à la base de données MongoDB (les coordonnées doivent respecter celles existant dans le fichier "docker-compose.yml").
+  data:
+    mongodb:
+      username: mouad
+      password: mouad
+      host: localhost
+      port: 27017
+      database: customer
+      authentication-database: admin
+
+server:
+  port: 8090
+
+
+# Note à considérer:
+# À mon avis, je pense qu'il faut ajouter les configurations de "Eureka client" comme ci-dessous pour que le service "customer" puisse se connecter au "Eureka server" situé dans le microservice "discovery".
+# Cependant, certaines configurations peuvent être appliquées automatiquement par Spring Cloud si on a les dépendances nécessaires dans le fichier pom.xml.
+#   Par exemple, l'ajout de la dépendance "spring-cloud-starter-netflix-eureka-client" peut activer certaines configurations par défaut pour "Eureka client" dans ce microservice concerné, ce qui entraîne qu'il n'est pas obligatoire de configurer explicitement "Eureka client" pour ce microservice "customer".
+#   NB: Le "Eureka server" est situé dans le microservice "discovery" et est activé par l'annotation : @EnableEurekaServer.
+
+# eureka:
+  # client:
+    # serviceUrl:
+      # defaultZone: http://localhost:8761/eureka/
+  # instance:
+    # preferIpAddress: true
