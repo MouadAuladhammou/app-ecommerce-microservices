@@ -1,0 +1,16 @@
+# Ce fichier contient des configurations communes qui doivent être appliquées à tous les microservices. Lorsqu'un microservice démarre, il va importer cette configuration commune en parallèle avec ses propres configuration
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
+  cloud:
+    config:
+      override-system-properties: false # cela empêche les propriétés système d'être écrasées par les fichiers application.yml situés dans les microservices ayant les mêmes attributs.
+
+name:
+  value: mouad # est une configuration personnalisée qui définit une propriété name avec la valeur mouad.
