@@ -1,0 +1,57 @@
+server:
+  port: 8040
+
+spring:
+  data:
+    mongodb:
+      username: mouad
+      password: mouad
+      host: localhost
+      port: 27017
+      database: notification
+      authentication-database: admin
+
+  kafka:
+    consumer: # is consumer
+      bootstrap-servers: localhost:9092
+      group-id: paymentGroup,orderGroup
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: '*' # cela signifie que tous les packages sont considérés comme des packages de confiance. Cela permet à Spring Kafka de désérialiser les messages JSON en objets Java provenant de n'importe quel package.
+        spring.json.type.mapping: orderConfirmation:com.mouad.ecommerce.kafka.order.OrderConfirmation,paymentConfirmation:com.mouad.ecommerce.kafka.payment.PaymentConfirmation
+        # "com.mouad.ecommerce.kafka.order.OrderConfirmation" => app-ecommerce-microservices\services\notification\src\main\java\com\mouad\ecommerce\kafka\order\OrderConfirmation.java
+        # "com.mouad.ecommerce.kafka.payment.PaymentConfirmation" => app-ecommerce-microservices\services\notification\src\main\java\com\mouad\ecommerce\kafka\payment\PaymentConfirmation.java
+        # NB: "orderConfirmation" et "paymentConfirmation" ne concerne pas un fichier. Dans le contexte de la configuration Spring Kafka, "paymentConfirmation" est simplement une chaîne de caractères utilisée comme un identifiant de type pour les messages JSON:
+        #  {
+        #   "type": "orderConfirmation",
+        #   "data": {
+        #     "orderReference": "12345",
+        #     "totalAmount": 30000,
+        #     ...
+        #  }
+        #  {
+        #   "type": "paymentConfirmation",
+        #   "data": {
+        #     "orderReference": "12345",
+        #     "amount": 300,
+        #     ...
+        #  }
+        # NB: com.mouad.ecommerce.kafka.order.OrderConfirmation de microservice "notification" et com.mouad.ecommerce.kafka.OrderConfirmation de microservice "order" doivent avoir la même structure de données
+        #     com.mouad.ecommerce.kafka.payment.PaymentConfirmation de microservice "notification" et com.mouad.ecommerce.notification.PaymentNotificationRequestde de microservice "payment" doivent avoir la même structure de données
+  mail:
+    host: localhost
+    port: 1025
+    username: mouad
+    password: mouad
+    properties:
+      mail:
+        smtp:
+          trust: "*"
+        auth: true
+        starttls:
+          enabled: true
+        connectiontimeout: 5000
+        timeout: 3000
+        writetimeout: 5000
