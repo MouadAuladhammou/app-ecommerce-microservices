@@ -1,0 +1,32 @@
+server:
+  port: 8070
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/order?createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    username: root
+    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    database: MYSQL
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.MySQL5Dialect
+
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.type.mapping: orderConfirmation:com.mouad.ecommerce.kafka.OrderConfirmation # "orderConfirmation" => utilisé dans app-ecommerce-microservices\services\order\src\main\java\com\mouad\ecommerce\kafka\OrderProducer.java. et "OrderConfirmation" => app-ecommerce-microservices\services\order\src\main\java\com\mouad\ecommerce\kafka\OrderConfirmation.java
+
+application:
+  config:
+    customer-url: http://localhost:8222/api/v1/customers
+    payment-url: http://localhost:8222/api/v1/payments
+    product-url: http://localhost:8222/api/v1/products
