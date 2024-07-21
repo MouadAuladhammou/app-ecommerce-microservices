@@ -6,8 +6,8 @@ import com.mouad.ecommerce.exception.BusinessException;
 import com.mouad.ecommerce.kafka.OrderProducer;
 import com.mouad.ecommerce.orderline.OrderLineRequest;
 import com.mouad.ecommerce.orderline.OrderLineService;
-// import com.mouad.ecommerce.payment.PaymentClient;
-// import com.mouad.ecommerce.payment.PaymentRequest;
+import com.mouad.ecommerce.payment.PaymentClient;
+import com.mouad.ecommerce.payment.PaymentRequest;
 import com.mouad.ecommerce.product.ProductClient;
 import com.mouad.ecommerce.product.PurchaseRequest;
 import jakarta.persistence.EntityNotFoundException;
@@ -25,7 +25,7 @@ public class OrderService {
     private final OrderRepository repository;
     private final OrderMapper mapper;
     private final CustomerClient customerClient;
-    // private final PaymentClient paymentClient;
+    private final PaymentClient paymentClient;
     private final ProductClient productClient;
     private final OrderLineService orderLineService;
     private final OrderProducer orderProducer;
@@ -55,7 +55,6 @@ public class OrderService {
         }
 
         // start payment process
-        /*
         var paymentRequest = new PaymentRequest(
             request.amount(),
             request.paymentMethod(),
@@ -64,7 +63,6 @@ public class OrderService {
             customer
         );
         paymentClient.requestOrderPayment(paymentRequest);
-        */
 
         // send the order confirmation => notification microservice (kafka)
         orderProducer.sendOrderConfirmation(

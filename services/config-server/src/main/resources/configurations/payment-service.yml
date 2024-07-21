@@ -1,0 +1,40 @@
+server:
+  port: 8060
+
+spring:
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/payment?createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    username: root
+    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    database: MYSQL
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.MySQL5Dialect
+
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.type.mapping: paymentConfirmation:com.mouad.ecommerce.notification.PaymentNotificationRequest
+        # com.mouad.ecommerce.notification.PaymentNotificationRequest =>  app-ecommerce-microservices\services\payment\src\main\java\com\mouad\ecommerce\notification\PaymentNotificationRequest.java
+        # NB: "paymentConfirmation" ne concerne pas un fichier. Dans le contexte de la configuration Spring Kafka, "paymentConfirmation" est simplement une chaîne de caractères utilisée comme un identifiant de type pour les messages JSON:
+        #  {
+        #   "type": "paymentConfirmation",
+        #   "data": {
+        #     "orderReference": "12345",
+        #     "amount": 300,
+        #     ...
+        #  }
+
+application:
+  config:
+    product-url: http://localhost:8222/api/v1/products

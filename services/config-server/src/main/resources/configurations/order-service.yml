@@ -23,7 +23,16 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
-        spring.json.type.mapping: orderConfirmation:com.mouad.ecommerce.kafka.OrderConfirmation # "orderConfirmation" => utilisé dans app-ecommerce-microservices\services\order\src\main\java\com\mouad\ecommerce\kafka\OrderProducer.java. et "OrderConfirmation" => app-ecommerce-microservices\services\order\src\main\java\com\mouad\ecommerce\kafka\OrderConfirmation.java
+        spring.json.type.mapping: orderConfirmation:com.mouad.ecommerce.kafka.OrderConfirmation
+        # "com.mouad.ecommerce.kafka.OrderConfirmation" => app-ecommerce-microservices\services\order\src\main\java\com\mouad\ecommerce\kafka\OrderConfirmation.java
+        # NB: "orderConfirmation" ne concerne pas un fichier. Dans le contexte de la configuration Spring Kafka, "paymentConfirmation" est simplement une chaîne de caractères utilisée comme un identifiant de type pour les messages JSON:
+        #  {
+        #   "type": "orderConfirmation",
+        #   "data": {
+        #     "orderReference": "12345",
+        #     "amount": 300,
+        #     ...
+        #  }
 
 application:
   config:
