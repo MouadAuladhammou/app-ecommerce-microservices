@@ -1,0 +1,32 @@
+server:
+  port: 8222
+
+spring:
+
+  # configure le Spring Cloud Gateway, qui est un composant d'API Gateway pour le routage et la gestion des requêtes vers les microservices dans une architecture de microservices
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true # active la fonctionnalité de découverte de services dans "Spring Cloud Gateway". Cela signifie que le gateway utilisera un service de découverte (ici c'est Eureka) pour découvrir automatiquement les instances des services (microservices) enregistrés.
+      routes: # définit les routes pour le "gateway". Chaque route contient des informations sur comment les requêtes doivent être dirigées vers les microservices appropriés.
+        - id: customer-service # c'est le nom de service (microservice) => c'est mentionné dans le fichier: app-ecommerce-microservices\services\customer\src\main\resources\application.yml
+          uri: lb:http://CUSTOMER-SERVICE # L'URI cible pour cette route. "lb": indique que le Load Balancer doit être utilisé pour résoudre le nom de service CUSTOMER-SERVICE. (Tu peux trouver ces noms en majuscule dans le lien: http://localhost:8761/)
+          predicates:
+            - Path=/api/v1/customers/** # définit les requêtes dont le chemin commence par /api/v1/customers/ seront routées vers le CUSTOMER-SERVICE.
+        - id: order-service
+          uri: lb:http://ORDER-SERVICE
+          predicates:
+            - Path=/api/v1/orders/**
+        - id: order-lines-service
+          uri: lb:http://ORDER-SERVICE
+          predicates:
+            - Path=/api/v1/order-lines/**
+        - id: product-service
+          uri: lb:http://PRODUCT-SERVICE
+          predicates:
+            - Path=/api/v1/products/**
+        - id: payment-service
+          uri: lb:http://PAYMENT-SERVICE
+          predicates:
+            - Path=/api/v1/payments/**

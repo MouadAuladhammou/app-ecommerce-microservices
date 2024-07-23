@@ -34,8 +34,32 @@ spring:
         #     ...
         #  }
 
+
+# on peut utiliser les ports des microservices appropriés au lieu du port du service "gateway" si vous voulez que le microservice order communique directement avec les autres microservices.
+#   Cependant, utiliser le service "gateway" présente plusieurs avantages, tels que la gestion centralisée des routes, l'équilibrage de charge, et les mécanismes de sécurité.
+
+
+# 1. Utilisation du Service Gateway
+# **** Avantages **** :
+# - Centralisation : Toutes les routes et configurations sont centralisées dans le "gateway".
+# - Sécurité : Le "gateway" peut gérer l'authentification et l'autorisation (en utilisant "Keycloak" avec "gateway").
+# - Equilibrage de Charge (Load Balancer) : Le "gateway" peut distribuer les requêtes entre plusieurs instances d'un microservice.
+# - Facilité de gestion : Les modifications de routes ou d'URL peuvent être faites dans un seul endroit.
 application:
   config:
     customer-url: http://localhost:8222/api/v1/customers
     payment-url: http://localhost:8222/api/v1/payments
     product-url: http://localhost:8222/api/v1/products
+
+
+# 2. Communication Directe avec les Microservices
+# **** Avantages **** :
+# - Performance : Communication plus rapide sans le routage supplémentaire via le gateway.
+# **** Inconvénients **** :
+# - Gestion Décentralisée : Chaque microservice doit gérer ses propres routes et configurations.
+# - Sécurité : Chaque microservice doit gérer individuellement l'authentification et l'autorisation.
+# application:
+  # config:
+    # customer-url: http://localhost:8090/api/v1/customers
+    # payment-url: http://localhost:8060/api/v1/payments
+    # product-url: http://localhost:8050/api/v1/products

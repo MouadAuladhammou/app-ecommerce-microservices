@@ -9,14 +9,14 @@ spring:
 
   # NB: Pour que Spring Boot prenne en compte les propriétés de configuration de MongoDB, la dépendance "Spring Data MongoDB" appropriée doit être ajoutée au projet de microservice "customer". (pom.xml: <artifactId>spring-boot-starter-data-mongodb</artifactId>)
   # Cela permet la connexion à la base de données MongoDB (les coordonnées doivent respecter celles existant dans le fichier "docker-compose.yml").
-  data:
-    mongodb:
-      username: mouad
-      password: mouad
-      host: localhost
-      port: 27017
-      database: customer
-      authentication-database: admin
+  # data:
+    #mongodb:
+      # username:
+      # password:
+      # host: localhost
+      # port: 27017
+      # database: customer
+      # authentication-database: admin
 
 server:
   port: 8090

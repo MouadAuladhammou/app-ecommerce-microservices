@@ -2,14 +2,14 @@ server:
   port: 8040
 
 spring:
-  data:
-    mongodb:
-      username: mouad
-      password: mouad
-      host: localhost
-      port: 27017
-      database: notification
-      authentication-database: admin
+  # data:
+    # mongodb:
+      # username: mouad
+      # password: mouad
+      # host: localhost
+      # port: 27017
+      # database: notification
+      # authentication-database: admin
 
   kafka:
     consumer: # is consumer
@@ -40,6 +40,7 @@ spring:
         #  }
         # NB: com.mouad.ecommerce.kafka.order.OrderConfirmation de microservice "notification" et com.mouad.ecommerce.kafka.OrderConfirmation de microservice "order" doivent avoir la même structure de données
         #     com.mouad.ecommerce.kafka.payment.PaymentConfirmation de microservice "notification" et com.mouad.ecommerce.notification.PaymentNotificationRequestde de microservice "payment" doivent avoir la même structure de données
+
   mail:
     host: localhost
     port: 1025
