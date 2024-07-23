@@ -2,14 +2,14 @@ server:
   port: 8040
 
 spring:
-  # data:
-    # mongodb:
-      # username: mouad
-      # password: mouad
-      # host: localhost
-      # port: 27017
-      # database: notification
-      # authentication-database: admin
+  data:
+    mongodb:
+      #username:
+      #password:
+      host: localhost
+      port: 27017
+      database: notification
+      authentication-database: admin
 
   kafka:
     consumer: # is consumer

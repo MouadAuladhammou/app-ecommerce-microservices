@@ -14,3 +14,16 @@ spring:
 
 name:
   value: mouad # est une configuration personnalisée qui définit une propriété name avec la valeur mouad.
+
+# Cette configuration de Zipkin est utilisée pour configurer le traçage distribué dans une application Spring Boot.
+# Le traçage distribué est une technique qui permet de suivre les requêtes à travers les différents microservices dans une architecture de microservices.
+# Cela aide à comprendre le flux des requêtes et à diagnostiquer les problèmes de performance et de latence.
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+
+# tracing.sampling.probability : Ce paramètre contrôle la probabilité d'échantillonnage des traces. La valeur est comprise entre 0.0 et 1.0.
+#   - 1.0 : Signifie que 100% des requêtes seront échantillonnées et envoyées à Zipkin. Cela signifie que chaque requête sera traçée.
+#   - 0.0 : Signifie que 0% des requêtes seront échantillonnées, donc aucune requête ne sera traçée.
+#   - 0.5 : Signifie que 50% des requêtes seront échantillonnées.

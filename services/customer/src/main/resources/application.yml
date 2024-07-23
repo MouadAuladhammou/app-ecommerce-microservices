@@ -1,5 +1,5 @@
 spring:
   config:
-    import: optional:configserver:http://localhost:8888 # Cette propriété indique que l'application doit charger sa configuration à partir d'un serveur de configuration Spring Cloud Config-Server situé à http://localhost:8888.
+    import: optional:configserver:http://localhost:8888 # Cette propriÃ©tÃ© indique que l'application doit charger sa configuration Ã  partir d'un serveur de configuration Spring Cloud Config-Server situÃ© Ã  http://localhost:8888.
   application:
-    name: customer-service # Définit le nom de l'application comme "customer-service". Ce nom sera utilisé par le Spring Cloud Config-Server pour fournir la configuration au microservice concerné
+    name: customer-service # DÃ©finit le nom de l'application comme "customer-service". Ce nom sera utilisÃ© par le Spring Cloud Config-Server pour fournir la configuration au microservice concernÃ©
