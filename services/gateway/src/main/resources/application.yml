@@ -1,4 +1,11 @@
 spring:
+
+  security:
+    oauth2:
+      resourceserver: # Indique que l'application est configurée comme un serveur de ressources OAuth2. Cela signifie que l'application va vérifier les tokens OAuth2 pour authentifier les requêtes entrantes.
+        jwt: # Spécifie que l'application utilise des JWT (JSON Web Tokens) pour l'authentification.
+          issuer-uri: "http://localhost:9098/realms/micro-services" # L'URI de l'émetteur (issuer) des tokens JWT. Il s'agit de l'URL du serveur d'autorisation (Keycloak dans ce cas) qui émet les tokens JWT.
+
   config:
     import: optional:configserver:http://localhost:8888
   application:
