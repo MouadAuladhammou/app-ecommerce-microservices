@@ -2,11 +2,18 @@ spring:
 
   security:
     oauth2:
-      resourceserver: # Indique que l'application est configurée comme un serveur de ressources OAuth2. Cela signifie que l'application va vérifier les tokens OAuth2 pour authentifier les requêtes entrantes.
-        jwt: # Spécifie que l'application utilise des JWT (JSON Web Tokens) pour l'authentification.
-          issuer-uri: "http://localhost:9098/realms/micro-services" # L'URI de l'émetteur (issuer) des tokens JWT. Il s'agit de l'URL du serveur d'autorisation (Keycloak dans ce cas) qui émet les tokens JWT.
+      resourceserver: # Indique que l'application est configurï¿½e comme un serveur de ressources OAuth2. Cela signifie que l'application va vï¿½rifier les tokens OAuth2 pour authentifier les requï¿½tes entrantes.
+        jwt: # Spï¿½cifie que l'application utilise des JWT (JSON Web Tokens) pour l'authentification.
+          issuer-uri: "http://localhost:9098/realms/app-micro-services-realm" # L'URI de l'ï¿½metteur (issuer) des tokens JWT. Il s'agit de l'URL du serveur d'autorisation (Keycloak dans ce cas) qui ï¿½met les tokens JWT.
+          jwk-set-uri: "http://localhost:9098/realms/app-micro-services-realm/protocol/openid-connect/certs"
 
   config:
     import: optional:configserver:http://localhost:8888
   application:
     name: gateway-service
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+    org.springframework.security.web: DEBUG

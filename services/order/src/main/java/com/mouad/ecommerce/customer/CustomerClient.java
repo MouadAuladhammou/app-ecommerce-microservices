@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.Optional;
 
 // on va créer une interface annotée avec @FeignClient. Cette interface définira les méthodes pour interagir avec un autre service web.
+// NB : la classe pour FeignClient doit toujours être de type "interface".
 @FeignClient(
     name = "customer-service",
     url = "${application.config.customer-url}"

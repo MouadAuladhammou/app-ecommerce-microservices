@@ -31,51 +31,56 @@ public class OrderService {
     private final OrderProducer orderProducer;
 
     @Transactional
-    public Integer createOrder(OrderRequest request) {
-        // check the customer
-        var customer = this.customerClient.findCustomerById(request.customerId())
-                .orElseThrow(() -> new BusinessException("Cannot create order:: No customer exists with the provided ID"));
+    public Integer createOrder(OrderRequest request) throws Error {
+        try {
+            // check the customer
+            var customer = this.customerClient.findCustomerById(request.customerId())
+                    .orElseThrow(() -> new BusinessException("Cannot create order:: No customer exists with the provided ID"));
 
-        // purchase the products => product microservice (RestTemplate)
-        var purchasedProducts = productClient.purchaseProducts(request.products());
+            // purchase the products => product microservice (RestTemplate)
+            var purchasedProducts = productClient.purchaseProducts(request.products());
 
-        // persist order
-        var order = this.repository.save(mapper.toOrder(request));
+            // persist order
+            var order = this.repository.save(mapper.toOrder(request));
 
-        // persist order lines
-        for (PurchaseRequest purchaseRequest : request.products()) {
-            orderLineService.saveOrderLine(
-                new OrderLineRequest(
-                    null,
-                    order.getId(),
-                    purchaseRequest.productId(),
-                    purchaseRequest.quantity()
-                )
-            );
-        }
+            // persist order lines
+            for (PurchaseRequest purchaseRequest : request.products()) {
+                orderLineService.saveOrderLine(
+                    new OrderLineRequest(
+                            null,
+                        order.getId(),
+                        purchaseRequest.productId(),
+                        purchaseRequest.quantity()
+                    )
+                );
+            }
 
-        // start payment process
-        var paymentRequest = new PaymentRequest(
-            request.amount(),
-            request.paymentMethod(),
-            order.getId(),
-            order.getReference(),
-            customer
-        );
-        paymentClient.requestOrderPayment(paymentRequest);
-
-        // send the order confirmation => notification microservice (kafka)
-        orderProducer.sendOrderConfirmation(
-            new OrderConfirmation(
-                request.reference(),
+            // start payment process
+            var paymentRequest = new PaymentRequest(
                 request.amount(),
                 request.paymentMethod(),
-                customer,
-                purchasedProducts
-            )
-        );
+                order.getId(),
+                order.getReference(),
+                customer
+            );
+            paymentClient.requestOrderPayment(paymentRequest);
 
-        return order.getId();
+            // send the order confirmation => notification microservice (kafka)
+            orderProducer.sendOrderConfirmation(
+                new OrderConfirmation(
+                    request.reference(),
+                    request.amount(),
+                    request.paymentMethod(),
+                    customer,
+                    purchasedProducts
+                )
+            );
+
+            return order.getId();
+        } catch (Error err) {
+            System.out.println(err.getMessage());
+            throw new Error("Error: " + err.getMessage());
+        }
     }
 
     public List<OrderResponse> findAllOrders() {

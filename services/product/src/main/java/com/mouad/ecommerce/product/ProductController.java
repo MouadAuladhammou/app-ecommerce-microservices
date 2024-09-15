@@ -15,26 +15,31 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
+
+// NB: Ceci est déjà initialisé dans la configuration "securityWebFilterChain" pour la sécurité.
+// @EnabledMethodSecurity(prePostEnabled = true) // Active la sécurité au niveau des méthodes avec @PreAuthorize et @PostAuthorize.
+
 public class ProductController {
-    private final ProductService service;
+    private final ProductService productService;
 
     @PostMapping
     public ResponseEntity<Integer> createProduct(@RequestBody @Valid ProductRequest request) {
-        return ResponseEntity.ok(service.createProduct(request));
+        return ResponseEntity.ok(productService.createProduct(request));
     }
 
     @PostMapping("/purchase")
     public ResponseEntity<List<ProductPurchaseResponse>> purchaseProducts(@RequestBody List<ProductPurchaseRequest> request) {
-        return ResponseEntity.ok(service.purchaseProducts(request));
+        return ResponseEntity.ok(productService.purchaseProducts(request));
     }
 
     @GetMapping("/{product-id}")
     public ResponseEntity<ProductResponse> findById(@PathVariable("product-id") Integer productId) {
-        return ResponseEntity.ok(service.findById(productId));
+        return ResponseEntity.ok(productService.findById(productId));
     }
 
+    // @PreAuthorize("hasAutority('user')")
     @GetMapping
     public ResponseEntity<List<ProductResponse>> findAll() {
-        return ResponseEntity.ok(service.findAll());
+        return ResponseEntity.ok(productService.findAll());
     }
 }

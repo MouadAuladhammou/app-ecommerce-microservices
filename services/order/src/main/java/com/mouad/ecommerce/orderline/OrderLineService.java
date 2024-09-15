@@ -10,16 +10,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrderLineService {
 
-    private final OrderLineRepository repository;
+    private final OrderLineRepository orderLineRepository;
     private final OrderLineMapper mapper;
 
-    public Integer saveOrderLine(OrderLineRequest request) {
-        var order = mapper.toOrderLine(request);
-        return repository.save(order).getId();
+    public void saveOrderLine(OrderLineRequest request) {
+        var orderLine = mapper.toOrderLine(request);
+        orderLineRepository.save(orderLine);
     }
 
     public List<OrderLineResponse> findAllByOrderId(Integer orderId) {
-        return repository.findAllByOrderId(orderId)
+        return orderLineRepository.findAllByOrderId(orderId)
                 .stream()
                 .map(mapper::toOrderLineResponse)
                 .collect(Collectors.toList());

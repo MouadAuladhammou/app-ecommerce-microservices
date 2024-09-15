@@ -28,7 +28,15 @@ public class ProductClient {
     public List<PurchaseResponse> purchaseProducts(List<PurchaseRequest> requestBody) {
         HttpHeaders headers = new HttpHeaders();
         headers.set(CONTENT_TYPE, APPLICATION_JSON_VALUE);
-        // on peut ajouter ici un TOKEN dans header
+
+        /*
+        // on peut ajouter ici un TOKEN dans header ici, mais c'est deja configuré dans Interceptor de RestTemplate (voir le fichier: RestTemplateInterceptor.java)
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        JwtAuthenticationToken jwtAuthenticationToken= (JwtAuthenticationToken) authentication;
+        String jwtAccessToken = jwtAuthenticationToken.getToken().getTokenValue();
+        headers.set("Authorization","Bearer " + jwtAccessToken);
+        */
 
         HttpEntity<List<PurchaseRequest>> requestEntity = new HttpEntity<>(requestBody, headers);
         ParameterizedTypeReference<List<PurchaseResponse>> responseType = new ParameterizedTypeReference<>() {
