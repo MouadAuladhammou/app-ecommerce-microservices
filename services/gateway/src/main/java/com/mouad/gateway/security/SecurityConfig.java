@@ -20,6 +20,7 @@ public class SecurityConfig {
         serverHttpSecurity
                 .csrf(ServerHttpSecurity.CsrfSpec::disable) // Désactive la protection CSRF (Cross-Site Request Forgery)
                 .authorizeExchange(exchange -> exchange // Configure les règles d'autorisation pour les échanges (requêtes) HTTP.
+                        .pathMatchers("/actuator/**").permitAll()
                         .pathMatchers("/eureka/**").permitAll() // Permet l'accès non authentifié à toutes les requêtes dont le chemin commence par "/eureka/".
                         .anyExchange().authenticated() // Exige l'authentification pour toutes les autres requêtes. Toute autre route non spécifiée explicitement nécessite que l'utilisateur soit authentifié pour y accéder.
                 ).oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults())); // Configure l'application pour utiliser OAuth2 Resource Server avec JWT (JSON Web Tokens) pour l'authentification. Cela signifie que l'application va vérifier et valider les tokens JWT dans les requêtes entrantes.

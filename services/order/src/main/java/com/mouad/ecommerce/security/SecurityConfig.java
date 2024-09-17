@@ -25,6 +25,7 @@ public class SecurityConfig {
 //                    .requestMatchers("/eureka/**").permitAll()
 //                    .requestMatchers("/api/v1/products/**").hasAuthority("ADMIN")
 //                    .requestMatchers("/api/v1/customers/**").hasAuthority("ADMIN")
+                    .requestMatchers("/actuator/**").permitAll()
                     .requestMatchers("/api/v1/orders/**").hasAuthority("ADMIN")
                     .anyRequest().authenticated()
             )

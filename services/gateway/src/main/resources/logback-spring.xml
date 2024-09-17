@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <jmxConfigurator/>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <springProperty scope="context" name="appName" source="spring.application.name"/>
+    <property name="FILE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"/>
+    <property name="HOSTNAME" value="${HOSTNAME:-localhost}"/>
+
+    <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
+        <http>
+            <url>http://localhost:3100/loki/api/v1/push</url>
+            <url>http://localhost:3100/loki/api/v1/push</url>
+            <!-- Si votre service s'exécute en dehors de Docker, utilisez 'localhost' -->
+            <!-- <url>http://localhost:3100/loki/api/v1/push</url> -->
+        </http>
+        <format>
+            <label>
+                <pattern>application=${appName},host=${HOSTNAME},level=%level</pattern>
+            </label>
+            <message>
+                <pattern>${FILE_LOG_PATTERN}</pattern>
+            </message>
+            <sortByTime>true</sortByTime>
+        </format>
+        <!-- Configuration du batch pour améliorer les performances -->
+        <batch>
+            <maxBatchSize>1000</maxBatchSize>
+            <maxBatchTimeMs>2000</maxBatchTimeMs>
+        </batch>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="LOKI"/>
+    </root>
+</configuration>

@@ -1,0 +1,36 @@
+global:
+  scrape_interval: # 10s Intervalle global pour récupérer les métriques toutes les 10 secondes
+  evaluation_interval: 10s # Intervalle global pour évaluer les règles toutes les 10 secondes
+
+scrape_configs:
+  - job_name: 'product-service'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s # Pour ce service spécifique, récupérer les métriques toutes les 5 secondes
+    static_configs:
+      - targets: [ 'host.docker.internal:8050' ] # Utiliser 'host.docker.internal' pour accéder à 'localhost' depuis l'intérieur du conteneur
+        labels:
+          application: 'Product Service Application'
+
+  - job_name: 'customer-service'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: [ 'host.docker.internal:8090' ]
+        labels:
+          application: 'Customer Service Application'
+
+  - job_name: 'order-service'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: [ 'host.docker.internal:8070' ]
+        labels:
+          application: 'Order Service Application'
+
+  - job_name: 'gateway-service'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 5s
+    static_configs:
+      - targets: [ 'host.docker.internal:8222' ]
+        labels:
+          application: 'Gateway Service Application'

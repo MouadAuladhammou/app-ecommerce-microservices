@@ -15,3 +15,22 @@ spring:
       properties:
         hibernate:
           dialect: org.hibernate.dialect.MySQL5Dialect
+
+
+########################################## config prometheus ##########################################
+management:
+  endpoints:
+    web:
+      exposure:
+        # Cette configuration expose les métriques pour "Prometheus", permettant de les exploiter et de les afficher dans le navigateur (être utilisé avec Grafana).
+        # NB : il faut d'avoir installé la dépendance : spring-boot-starter-actuator
+        include: prometheus,health,info,metrics # Cette configuration expose les métriques spécifiées (prometheus, health, info, metrics). on peut mettre "*" pour exposer tous les endpoints disponibles.
+
+  endpoint:
+    prometheus:
+      enabled: true
+
+  metrics:
+    export:
+      prometheus:
+        enabled: true
