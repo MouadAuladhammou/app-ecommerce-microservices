@@ -5,6 +5,10 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.cache.annotation.Caching;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.CacheEvict;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -17,22 +21,37 @@ public class ProductService {
     private final ProductRepository repository;
     private final ProductMapper mapper;
 
-    public Integer createProduct(ProductRequest request) {
+    @CachePut(value = "products", key = "#result.id")
+    @CacheEvict(value = "allProducts", allEntries = true)
+    public ProductResponse createProduct(ProductRequest request) {
         var product = mapper.toProduct(request);
-        return repository.save(product).getId();
+        var savedProduct = repository.save(product);
+        return mapper.toProductResponse(savedProduct);
     }
 
+    @Cacheable(value = "products", key = "#id")
     public ProductResponse findById(Integer id) {
         return repository.findById(id)
                 .map(mapper::toProductResponse)
                 .orElseThrow(() -> new EntityNotFoundException("Product not found with ID:: " + id));
     }
 
+    @Cacheable(value = "allProducts")
     public List<ProductResponse> findAll() {
         return repository.findAll()
                 .stream()
                 .map(mapper::toProductResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Caching(
+        evict = {
+            @CacheEvict(value = "products", key = "#id"),
+            @CacheEvict(value = "allProducts", allEntries = true)
+        }
+    )
+    public void delete(Long id) {
+        // Logique pour supprimer l'entité
     }
 
     @Transactional(rollbackFor = ProductPurchaseException.class)
