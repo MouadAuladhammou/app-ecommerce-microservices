@@ -13,7 +13,7 @@ spring:
         - id: customer-service # c'est le nom de service (microservice) => c'est mentionné dans le fichier: app-ecommerce-microservices\services\customer\src\main\resources\application.yml
           uri: lb:http://CUSTOMER-SERVICE # L'URI cible pour cette route. "lb": indique que le Load Balancer doit être utilisé pour résoudre le nom de service CUSTOMER-SERVICE. (Tu peux trouver ces noms en majuscule dans le lien: http://localhost:8761/)
           predicates:
-            - Path=/api/v1/customers/** # définit les requêtes dont le chemin commence par /api/v1/customers/ seront routées vers le CUSTOMER-SERVICE.
+            - Path=/api/v1/customers/**,/api/v1/users/** # Définit que les requêtes dont le chemin commence par /api/v1/customers/ et /api/v1/users/ seront routées vers le CUSTOMER-SERVICE
         - id: order-service
           uri: lb:http://ORDER-SERVICE
           predicates:

@@ -3,3 +3,18 @@ spring:
     import: optional:configserver:http://localhost:8888 # Cette propriété indique que l'application doit charger sa configuration à partir d'un serveur de configuration Spring Cloud Config-Server situé à http://localhost:8888.
   application:
     name: customer-service # Définit le nom de l'application comme "customer-service". Ce nom sera utilisé par le Spring Cloud Config-Server pour fournir la configuration au microservice concerné
+
+  security:
+    oauth2:
+      resourceserver: # Indique que l'application est configur�e comme un serveur de ressources OAuth2. Cela signifie que l'application va v�rifier les tokens OAuth2 pour authentifier les requ�tes entrantes.
+        jwt: # Sp�cifie que l'application utilise des JWT (JSON Web Tokens) pour l'authentification.
+          issuer-uri: "http://localhost:9098/realms/app-micro-services-realm" # L'URI de l'�metteur (issuer) des tokens JWT. Il s'agit de l'URL du serveur d'autorisation (Keycloak dans ce cas) qui �met les tokens JWT.
+          jwk-set-uri: "http://localhost:9098/realms/app-micro-services-realm/protocol/openid-connect/certs"
+
+keycloak:
+  admin:
+    server-url: "http://localhost:9098"
+    realm: "app-micro-services-realm"
+    client-id: "client-angular"
+    username: "admin@gmail.com"
+    password: "123456"
