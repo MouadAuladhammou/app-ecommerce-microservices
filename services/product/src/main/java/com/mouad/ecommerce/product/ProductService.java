@@ -9,10 +9,12 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.beans.factory.annotation.Autowired;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,6 +22,11 @@ import java.util.stream.Collectors;
 public class ProductService {
     private final ProductRepository repository;
     private final ProductMapper mapper;
+
+    private static final String EXTERNAL_API_URL = "https://jsonplaceholder.typicode.com/users";
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @CachePut(value = "products", key = "#result.id")
     @CacheEvict(value = "allProducts", allEntries = true)
@@ -36,12 +43,45 @@ public class ProductService {
                 .orElseThrow(() -> new EntityNotFoundException("Product not found with ID:: " + id));
     }
 
-    @Cacheable(value = "allProducts")
+    // NB: Ordre actuel (Cache avant Circuit Breaker): ce qui réduit le nombre d'appels au circuit breaker.
+    //     en revancehe, Peut masquer des problèmes dans la méthode réelle, car certains appels ne sont pas surveillés par le circuit breaker
+    // @Cacheable(value = "allProducts")
+    // Ici on utilise un CircuitBreaker avec une fonction interne
+    @CircuitBreaker(name = "myCircuitBreaker", fallbackMethod = "fallbackGetData")
     public List<ProductResponse> findAll() {
+        // Forcer une exception pour déclencher le Circuit Breaker
+        // throw new RuntimeException("Erreur simulée pour tester le Circuit Breaker");
+
         return repository.findAll()
                 .stream()
                 .map(mapper::toProductResponse)
                 .collect(Collectors.toList());
+    }
+    public List<ProductResponse> fallbackGetData(Throwable throwable) {
+        ProductResponse fallbackProduct = new ProductResponse(
+                null, // id
+                null, // name
+                "Service temporairement indisponible. Veuillez réessayer plus tard", // description
+                0.0, // availableQuantity
+                BigDecimal.ZERO, // price
+                null, // categoryId
+                null, // categoryName
+                null  // categoryDescription
+        );
+        return Collections.singletonList(fallbackProduct);
+    }
+
+    // Ici on utilise un CircuitBreaker avec une API externe
+    @CircuitBreaker(name = "myCircuitBreaker", fallbackMethod = "fallbackGetUsers")
+    public List<UserResponse> getAllUsers() {
+        UserResponse[] users = restTemplate.getForObject(EXTERNAL_API_URL, UserResponse[].class);
+        return users != null ? Arrays.asList(users) : Collections.emptyList();
+    }
+    public List<UserResponse> fallbackGetUsers(Throwable throwable) {
+        UserResponse fallbackUser = new UserResponse();
+        fallbackUser.setId(null);
+        fallbackUser.setName("Service temporairement indisponible. Veuillez réessayer plus tard.");
+        return Collections.singletonList(fallbackUser);
     }
 
     @Caching(

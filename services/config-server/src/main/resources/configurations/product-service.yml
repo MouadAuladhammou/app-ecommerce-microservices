@@ -24,20 +24,37 @@ spring:
     redis:
       time-to-live: 60000
 
+logging:
+  level:
+    io.github.resilience4j: DEBUG
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      myCircuitBreaker:
+        registerHealthIndicator: true # cela permet de surveiller l'état du circuit breaker via les endpoints de santé (/actuator/health)
+        failureRateThreshold: 50 # Le seuil de taux de défaillance (en pourcentage: 50%) à partir duquel le circuit breaker passe à l'état ouvert. Ici, si 50% ou plus des appels dans la fenêtre glissante échouent, le circuit s'ouvre.
+        minimumNumberOfCalls: 3 # c'est le nombre minimum d'appels requis avant que le circuit breaker puisse évaluer le taux de défaillance. Avec une valeur de 3, au moins 3 appels doivent être effectués avant que le circuit breaker puisse s'ouvrir
+        slidingWindowSize: 5 # calculer le taux de défaillance. Ici, les 5 derniers appels sont pris en compte pour déterminer si le seuil de défaillance est atteint
+        waitDurationInOpenState: 3s #  La durée pendant laquelle le circuit breaker reste ouvert avant de passer en état semi-ouvert pour tester si le service est redevenu disponible. Ici, le circuit reste ouvert pendant 3 secondes.
+        permittedNumberOfCallsInHalfOpenState: 2 # Le nombre d'appels autorisés pendant l'état semi-ouvert. Dans cet exemple, seulement 2 appels sont autorisés pour vérifier si le service fonctionne à nouveau.
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        slidingWindowType: COUNT_BASED
+
 ########################################## config prometheus ##########################################
 management:
+  health:
+    show-details: always
+    circuitbreakers:
+      enabled: true
+
+  endpoint:
+    health:
+      show-details: always
+
   endpoints:
     web:
       exposure:
         # Cette configuration expose les métriques pour "Prometheus", permettant de les exploiter et de les afficher dans le navigateur (être utilisé avec Grafana).
         # NB : il faut d'avoir installé la dépendance : spring-boot-starter-actuator
         include: prometheus,health,info,metrics # Cette configuration expose les métriques spécifiées (prometheus, health, info, metrics). on peut mettre "*" pour exposer tous les endpoints disponibles.
-
-  endpoint:
-    prometheus:
-      enabled: true
-
-  metrics:
-    export:
-      prometheus:
-        enabled: true

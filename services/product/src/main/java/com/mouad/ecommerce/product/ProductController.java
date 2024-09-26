@@ -66,4 +66,9 @@ public class ProductController {
     public ResponseEntity<List<ProductResponse>> findAll() {
         return ResponseEntity.ok(productService.findAll());
     }
+
+    @GetMapping("/users")
+    public List<UserResponse> getUsers() {
+        return productService.getAllUsers();
+    }
 }
