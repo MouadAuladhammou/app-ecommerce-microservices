@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/product_prod?createDatabaseIfNotExist=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    # username: root
+    # password:
+    username: ${DB_USERNAME_PROD} # on peut définir DB_USERNAME dans GitHub en utilisant les Secrets GitHub
+    password: ${DB_PASSWORD_PROD} # on peut définir DB_PASSWORD dans GitHub en utilisant les Secrets GitHub
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+my-project:
+  mode: "prod"

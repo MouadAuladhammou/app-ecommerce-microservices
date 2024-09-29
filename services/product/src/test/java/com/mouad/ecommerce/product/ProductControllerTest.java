@@ -8,15 +8,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
 import java.util.List;
+
+// NB: @ActiveProfiles("test") fonctionne bien dans "ProductControllerTest", car "ProductControllerTest" utilise @WebMvcTest qui charge un sous-ensemble du contexte Spring, généralement les contrôleurs et les composants liés au web
+//   Par contre, s'il est utilisé dans "ProductServiceTest", Spring Boot charge le contexte d'application complet en utilisant les configurations spécifiques au profil "test", en ignorant les mocks initialisées dedans lors des traitements.
+@ActiveProfiles("test") // Indiquer à Spring Boot d'activer le profil "test" lors de l'exécution de ces tests, même si le profil par défaut est "dev" (voir le fichier: application.yml). Cela entraînera le chargement des configurations de "application-test.yml"
 
 // @WebMvcTest(controllers = ProductController.class, excludeAutoConfiguration = {SecurityAutoConfiguration.class, OAuth2ResourceServerAutoConfiguration.class})
 @WebMvcTest(ProductController.class) // Indique que vous testez le "ProductController". Cela configure un environnement de test limité à la couche web (les contrôleurs)
@@ -36,9 +42,18 @@ public class ProductControllerTest {
     @Autowired
     private ObjectMapper objectMapper; // Permet de convertir les objets en JSON
 
+    @Value("${PROJECT_NAME}")
+    private String projectName;
+
+    @Value("${my-project.mode}")
+    private String mode;
+
     @DisplayName("Test pour l'endpoint POST /api/v1/products")
     @Test
     void testCreateProduct() throws Exception {
+        System.out.println("PROJECT_NAME: " + projectName);
+        System.out.println("mode: " + mode);
+
         // Arrange
         ProductRequest request = new ProductRequest(
                 99,
@@ -86,6 +101,9 @@ public class ProductControllerTest {
     @DisplayName("Test pour l'endpoint GET /api/v1/products/{product-id}")
     @Test
     void testFindById() throws Exception {
+        System.out.println("PROJECT_NAME: " + projectName);
+        System.out.println("mode: " + mode);
+
         // Arrange
         ProductResponse response = new ProductResponse(
                 99,
@@ -121,6 +139,9 @@ public class ProductControllerTest {
     @DisplayName("Test pour l'endpoint GET /api/v1/products (findAll)")
     @Test
     void testFindAll() throws Exception {
+        System.out.println("PROJECT_NAME: " + projectName);
+        System.out.println("mode: " + mode);
+
         // Arrange
         List<ProductResponse> responses = List.of(
                 new ProductResponse(99, "Product Name 1", "Product Description 1", 10, new BigDecimal("99.99"), 1, "Category Name 1", "Category Description 1"),

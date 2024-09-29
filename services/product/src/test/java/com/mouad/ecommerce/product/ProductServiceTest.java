@@ -64,7 +64,7 @@ class ProductServiceTest {
 
         // Création d'un nouvel objet Product simulé (mocked)
         Product product = new Product();
-        product.setId(1);
+        product.setId(99);
         product.setName("Product Name");
         product.setDescription("Product Description");
         product.setAvailableQuantity(10);
@@ -77,7 +77,7 @@ class ProductServiceTest {
 
         // Création d'un produit enregistré simulé (mocked)
         Product savedProduct = new Product();
-        savedProduct.setId(1); // Simulating that this is the product saved by the repository
+        savedProduct.setId(99); // Simulating that this is the product saved by the repository
         savedProduct.setName("Product Name");
         savedProduct.setDescription("Product Description");
         savedProduct.setAvailableQuantity(10);

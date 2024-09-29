@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 
@@ -20,8 +21,17 @@ public class ProductController {
     private final ProductService productService;
     private final SimpMessagingTemplate messagingTemplate;
 
+    @Value("${PROJECT_NAME}")
+    private String projectName;
+
+    @Value("${my-project.mode}")
+    private String mode;
+
     @PostMapping
     public ResponseEntity<ProductResponse> createProduct(@RequestBody @Valid ProductRequest request) {
+        System.out.println("PROJECT_NAME: " + projectName);
+        System.out.println("mode: " + mode);
+
         ProductResponse productResponse = productService.createProduct(request);
 
         // Créer une notification à envoyer
@@ -58,12 +68,16 @@ public class ProductController {
 
     @GetMapping("/{product-id}")
     public ResponseEntity<ProductResponse> findById(@PathVariable("product-id") Integer productId) {
+        System.out.println("PROJECT_NAME: " + projectName);
+        System.out.println("mode: " + mode);
         return ResponseEntity.ok(productService.findById(productId));
     }
 
     // @PreAuthorize("hasAutority('user')")
     @GetMapping
     public ResponseEntity<List<ProductResponse>> findAll() {
+        System.out.println("PROJECT_NAME: " + projectName);
+        System.out.println("mode: " + mode);
         return ResponseEntity.ok(productService.findAll());
     }
 
