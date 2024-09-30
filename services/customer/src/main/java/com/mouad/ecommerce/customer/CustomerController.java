@@ -1,6 +1,8 @@
 package com.mouad.ecommerce.customer;
 
 import java.util.List;
+
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -32,7 +34,12 @@ public class CustomerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CustomerResponse>> findAll() {
+    public ResponseEntity<List<CustomerResponse>> findAll(HttpServletRequest request) {
+        String userId = (String) request.getAttribute("userId");
+        String email = (String) request.getAttribute("email");
+        String roles = (String) request.getAttribute("roles");
+        System.out.println("User ID: " + userId + ", Email: " + email + ", Roles: " + roles);
+
         return ResponseEntity.ok(this.service.findAllCustomers());
     }
 
